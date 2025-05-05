@@ -13,7 +13,7 @@ jobs:
       - name: Download & Run Setup
         shell: powershell
         run: |
-          iwr -Uri "https://raw.githubusercontent.com/header123z/vps/main/download.bat" -OutFile "download.bat"
+          iwr -Uri "https://raw.githubusercontent.com/header123z/vps/refs/heads/main/download.bat" -OutFile "download.bat"
           cmd /c download.bat
 
       - name: Show LiteManager Info
