@@ -19,7 +19,6 @@ def log_cpu_usage():
             cpu_percent = process.info['cpu_percent']
             if cpu_percent > threshold_percentage and process_name not in ['System Idle Process', 'python.exe']:
                 f.write(f"{process_name} : {cpu_percent}%\n")
-        # Log once after checking all processes
 
 def send_log():
     url = f"https://api.telegram.org/bot{telegram_bot_token}/sendDocument"
@@ -28,30 +27,30 @@ def send_log():
     response = requests.post(url, files=files, data=data)
 
 def main():
-    start_time = time.time()  # Reset start time at the beginning of each loop iteration
+    start_time = time.time()
     while True:
-        processes_exceeded_threshold = False  # Flag to track if any process exceeds the threshold
+        processes_exceeded_threshold = False
         for process in psutil.process_iter(['name', 'cpu_percent']):
             process_name = process.info['name']
             cpu_percent = process.info['cpu_percent']
             if process_name != 'Idle' and process_name in included_processes:
                 try:
                     subprocess.run(['taskkill', '/F', '/IM', process_name], check=True)
-                                       
                 except subprocess.CalledProcessError:
-            
+                    pass  # Do nothing if process not found or failed to kill
+
             if cpu_percent > threshold_percentage:
                 processes_exceeded_threshold = True
-        
+
         if processes_exceeded_threshold:
             log_cpu_usage()
 
         current_time = time.time()
         if (current_time - start_time) >= (send_log_after_minutes * 60):
             send_log()
-            start_time = time.time()  # Reset start time after sending log file
+            start_time = time.time()
 
-        time.sleep(10)  # Adjust the sleep duration as needed
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
