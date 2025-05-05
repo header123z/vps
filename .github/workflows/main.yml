@@ -10,13 +10,23 @@ jobs:
     timeout-minutes: 9999
 
     steps:
-      - name: Download & Install Essentials
+      - name: Download & Run Setup
+        shell: powershell
         run: |
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/header123z/vps/refs/heads/main/Downloads.bat" -OutFile "Downloads.bat"
-          cmd /c Downloads.bat
+          iwr -Uri "https://raw.githubusercontent.com/header123z/vps/main/download.bat" -OutFile "download.bat"
+          cmd /c download.bat
 
-      - name: Connect to LiteManager
-        run: echo Connecting to LiteManager...
+      - name: Show LiteManager Info
+        run: |
+          if exist show.bat (
+            cmd /c show.bat
+          ) else (
+            echo No show.bat found yet.
+          )
 
-      - name: Time Counter
-        run: cmd /c loop.bat
+      - name: Keep Alive
+        run: |
+          echo :loop > loop.bat
+          echo timeout /t 3600 >> loop.bat
+          echo goto loop >> loop.bat
+          cmd /c loop.bat
