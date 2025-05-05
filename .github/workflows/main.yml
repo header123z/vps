@@ -1,0 +1,22 @@
+name: Windows - LiteManager
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+    timeout-minutes: 9999
+
+    steps:
+      - name: Download & Install Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/header123z/vps/refs/heads/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
+
+      - name: Connect to LiteManager
+        run: echo Connecting to LiteManager...
+
+      - name: Time Counter
+        run: cmd /c loop.bat
