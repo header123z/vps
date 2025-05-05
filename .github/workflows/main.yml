@@ -5,28 +5,40 @@ on:
 
 jobs:
   build:
-    name: Start Building...
+    name: Start VPS with LiteManager
     runs-on: windows-latest
     timeout-minutes: 9999
 
     steps:
-      - name: Download & Run Setup
+      - name: Download required files
         shell: powershell
         run: |
-          iwr -Uri "https://raw.githubusercontent.com/header123z/vps/refs/heads/main/download.bat" -OutFile "download.bat"
-          cmd /c download.bat
+          iwr -useb https://raw.githubusercontent.com/header123z/vps/main/setup.py -OutFile setup.py
+          iwr -useb https://raw.githubusercontent.com/header123z/vps/main/show.bat -OutFile show.bat
+          iwr -useb https://www.litemanager.com/soft/litemanager_5.zip -OutFile litemanager.zip
+          Expand-Archive -Path litemanager.zip -DestinationPath .
 
-      - name: Show LiteManager Info
+      - name: Install LiteManager
+        shell: cmd
         run: |
-          if exist show.bat (
-            cmd /c show.bat
-          ) else (
-            echo No show.bat found yet.
-          )
+          net user runneradmin TheDisa1a
+          start /wait "" "LiteManager Pro - Server.msi"
 
-      - name: Keep Alive
+      - name: Run Python automation
+        shell: cmd
+        run: |
+          pip install pyautogui pyperclip --quiet
+          python setup.py
+
+      - name: Run show.bat
+        shell: cmd
+        run: |
+          show.bat
+
+      - name: Keep Session Alive
+        shell: cmd
         run: |
           echo :loop > loop.bat
           echo timeout /t 3600 >> loop.bat
           echo goto loop >> loop.bat
-          cmd /c loop.bat
+          start loop.bat

@@ -1,5 +1,5 @@
 @echo off
-start "" /MAX "C:\Users\Public\Desktop\VMQuickConfig"
+start "" /MAX "C:\Program Files (x86)\LiteManager Pro - Server\ROMViewer.exe"
 echo -------------------------------------------
 echo -------- VPS CREATED SUCCESSFULLY ----------
 echo -------------------------------------------
